@@ -43,3 +43,13 @@
 24. Run `npm run dev` — both servers must start without errors in a single terminal
 25. Open `http://localhost:5173` in a browser — must show the home page with the heading, tagline, and welcome paragraph
 26. Run `curl http://localhost:5173/api` — must return `{"status":"ok"}` proxied through Vite to Hono
+
+## Group 7 — Main Layout Component
+
+27. Create `src/components/Header.tsx`, `src/components/Main.tsx`, and `src/components/Footer.tsx` as three minimal subcomponents
+28. Create `src/components/Layout.tsx` composing `<Header />`, `<Main>{children}</Main>`, and `<Footer />`
+29. Create `src/components/Layout.css` with minimal styles (no CSS reset, no custom properties — those are Phase 3)
+30. Import `Layout.css` in `Layout.tsx`
+31. Update `src/App.tsx` to render its content inside `<Layout>`
+32. Run `npm run typecheck` — must exit 0 with no errors
+33. Open `http://localhost:5173` in a browser — must show the home page wrapped in a header and footer

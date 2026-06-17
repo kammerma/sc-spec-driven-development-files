@@ -25,6 +25,9 @@ All packages in `package.json` must use exact versions — no `^` or `~` range p
 ### Concurrent dev servers via a single command
 Use `concurrently` (or equivalent) so `npm run dev` starts both the Vite frontend and the Hono API server together. Developers should never need to manage two terminals.
 
+### Layout subcomponents live in their own files
+`Header`, `Main`, and `Footer` are each defined in their own file under `src/components/` (`Header.tsx`, `Main.tsx`, `Footer.tsx`), not inlined inside `Layout.tsx`. Keeps each subcomponent independently readable and testable as the layout grows.
+
 ## Context
 
 This phase proves the baseline scaffold works: Vite builds and hot-reloads the React frontend, Hono serves an API response, and the Vite proxy routes `/api/*` traffic to Hono.

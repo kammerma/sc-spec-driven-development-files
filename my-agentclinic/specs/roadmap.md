@@ -4,7 +4,7 @@ Phases are nano-sized — each one is a single, verifiable change. Small phases 
 
 ---
 
-## Phase 1 — Project Scaffold
+## Phase 1 — Project Scaffold ✅ Complete
 - Vite + React + TypeScript project initialised
 - Hono API server added alongside frontend
 - Both dev servers start with one command (`npm run dev`)
