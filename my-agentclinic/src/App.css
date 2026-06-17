@@ -1,0 +1,12 @@
+.container {
+  max-width: 720px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+  font-size: 1.125rem;
+  font-family: system-ui, sans-serif;
+}
+
+.tagline {
+  font-size: 1.25rem;
+  color: #555;
+}
