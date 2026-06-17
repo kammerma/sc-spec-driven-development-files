@@ -22,6 +22,7 @@ AgentClinic is a client-side TypeScript application built with React and Vite. T
 ## Testing
 
 - **Vitest** — fast, TypeScript-native, works with both React (via jsdom) and the API server
+- Run via `npm test` (`vitest run`); used for validating features before merge
 
 ## Tooling
 

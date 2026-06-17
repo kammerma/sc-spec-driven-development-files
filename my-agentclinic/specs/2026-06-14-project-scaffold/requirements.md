@@ -9,7 +9,7 @@ Deliver a minimal AgentClinic home page: a heading, tagline, and short welcome p
 ## Out of Scope
 
 - No client-side routing library (Phase 6+)
-- No test framework setup (Vitest deferred to a later phase)
+- No test files written for this phase (Vitest was added to the toolchain after this phase shipped; see `tech-stack.md`)
 - No CSS framework, CSS reset, or custom properties (Phase 3)
 - No database or API routes beyond a basic health-check
 - No CI/CD pipeline

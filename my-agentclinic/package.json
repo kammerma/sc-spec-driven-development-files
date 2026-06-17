@@ -9,7 +9,8 @@
     "preserver": "kill-port 3001",
     "server": "tsx src/server/index.ts",
     "typecheck": "tsc --noEmit",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hono/node-server": "2.0.5",
@@ -18,14 +19,17 @@
     "react-dom": "19.2.7"
   },
   "devDependencies": {
+    "@testing-library/react": "16.3.2",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
     "concurrently": "10.0.3",
+    "jsdom": "29.1.1",
     "kill-port": "^2.0.1",
     "tsx": "4.22.4",
     "typescript": "5.9.3",
-    "vite": "8.0.16"
+    "vite": "8.0.16",
+    "vitest": "4.1.9"
   },
   "private": true
 }
