@@ -2,6 +2,8 @@
 
 Phases are nano-sized — each one is a single, verifiable change. Small phases mean fast feedback and easy rollback.
 
+Every phase that ships UI must be responsive (phone, tablet, desktop) per Steve's requirement — this is a baseline expectation, not deferred to a single later phase.
+
 ---
 
 ## Phase 1 — Project Scaffold ✅ Complete
@@ -61,7 +63,7 @@ Phases are nano-sized — each one is a single, verifiable change. Small phases 
 - Mary's dashboard is now real
 
 ## Phase 13 — Polish
-- Responsive layout for Steve's modern-browser requirement
+- Responsive audit across all existing pages (catch anything earlier phases missed)
 - Semantic HTML audit; keyboard navigation and focus styles
 - Error states for failed API fetches
 

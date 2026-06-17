@@ -47,6 +47,12 @@ Must return a JSON response (e.g. `{"status":"ok"}`). This confirms the Vite pro
 
 `tsconfig.json` must contain `"strict": true`.
 
+### 7. Home page is responsive
+
+Resize the browser (or use devtools device toolbar) from phone width (~360px) to desktop.
+
+Must not produce horizontal scrolling, and padding/font-size must scale down sensibly on narrow viewports rather than staying fixed.
+
 ## Not Required
 
 - No automated tests for this phase

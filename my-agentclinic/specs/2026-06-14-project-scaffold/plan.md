@@ -53,3 +53,9 @@
 31. Update `src/App.tsx` to render its content inside `<Layout>`
 32. Run `npm run typecheck` — must exit 0 with no errors
 33. Open `http://localhost:5173` in a browser — must show the home page wrapped in a header and footer
+
+## Group 8 — Responsive Pass
+
+34. Add a breakpoint to `App.css` so `.container` padding/font-size shrink on narrow viewports instead of relying on a fixed `max-width` alone
+35. Add a breakpoint to `Layout.css` so header/footer padding shrinks on narrow viewports
+36. Confirm in a browser (or devtools device toolbar) that the home page reads well from phone width up through desktop, with no horizontal scrolling

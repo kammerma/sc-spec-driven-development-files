@@ -28,6 +28,9 @@ Use `concurrently` (or equivalent) so `npm run dev` starts both the Vite fronten
 ### Layout subcomponents live in their own files
 `Header`, `Main`, and `Footer` are each defined in their own file under `src/components/` (`Header.tsx`, `Main.tsx`, `Footer.tsx`), not inlined inside `Layout.tsx`. Keeps each subcomponent independently readable and testable as the layout grows.
 
+### Layout and home page are responsive
+Steve needs the site to work well on phones, tablets, and desktop browsers. `App.css` and `Layout.css` use fluid widths and a breakpoint for narrow viewports so the home page stays readable without horizontal scrolling or oversized padding on small screens. This applies retroactively (added after the phase initially shipped); see `tech-stack.md`.
+
 ## Context
 
 This phase proves the baseline scaffold works: Vite builds and hot-reloads the React frontend, Hono serves an API response, and the Vite proxy routes `/api/*` traffic to Hono.
@@ -39,4 +42,4 @@ The home page content should come from `specs/mission.md` — the heading is "Ag
 ## Stakeholder Notes
 
 - **Mary** needs TypeScript end-to-end (satisfied by `"strict": true` + passing `tsc --noEmit`)
-- **Steve** has no requirements yet; this phase is plumbing only
+- **Steve** needs the home page to work well on a modern browser at any screen size (satisfied by the responsive layout decision above)

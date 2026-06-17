@@ -13,6 +13,7 @@ AgentClinic is a client-side TypeScript application built with React and Vite. T
 | API server | **Hono** | Lightweight TypeScript-first server; serves JSON to the React frontend |
 | Database | **SQLite** (via `better-sqlite3`) | Embedded, zero-infrastructure, perfect for this scale |
 | CSS | Plain CSS + CSS custom properties | No build complexity; Steve gets a modern, attractive result |
+| Layout | Responsive (fluid widths + breakpoints) | Steve's requirement: the site must work well on phones, tablets, and desktop browsers |
 
 ## Data
 
