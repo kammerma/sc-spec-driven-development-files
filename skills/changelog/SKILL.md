@@ -10,7 +10,7 @@ description: Maintains CHANGELOG.md in the project root using git commit history
 1. Run the script from the project root:
 
 ```bash
-python3 <skill-dir>/scripts/changelog.py
+node <skill-dir>/scripts/changelog.mjs
 ```
 
 Where `<skill-dir>` is the directory containing this skill. Claude Code exposes the skill path — use it directly.
