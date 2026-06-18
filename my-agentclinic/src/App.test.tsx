@@ -6,7 +6,7 @@ describe('App', () => {
   it('renders the AgentClinic home page', () => {
     render(<App />)
 
-    expect(screen.getByRole('heading', { name: 'AgentClinic' })).toBeDefined()
+    expect(screen.getByRole('heading', { name: 'AgentClinic is open for business' })).toBeDefined()
     expect(screen.getByText(/wellness platform for AI agents/)).toBeDefined()
   })
 })

@@ -10,7 +10,7 @@ describe('Layout', () => {
       </Layout>,
     )
 
-    expect(screen.getByRole('heading', { name: 'AgentClinic' })).toBeDefined()
+    expect(screen.getByRole('heading', { name: 'AgentClinic is open for business' })).toBeDefined()
     expect(screen.getByText('page content')).toBeDefined()
     expect(screen.getByText(/AgentClinic/, { selector: 'footer p' })).toBeDefined()
   })

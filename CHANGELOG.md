@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-06-18
+
+- Implement Phase 2: hello world heading, theme, SQLite DB, agents API
+
 ## 2026-06-17
 
 - Responsive design implemented

@@ -4,7 +4,11 @@ import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
 
-export default function Layout({ children }: { children: ReactNode }) {
+type LayoutProps = {
+  children: ReactNode
+}
+
+export default function Layout({ children }: LayoutProps) {
   return (
     <>
       <Header />
