@@ -2,23 +2,18 @@
   max-width: 720px;
   margin: 4rem auto;
   padding: 0 1.5rem;
-  font-size: 1.125rem;
-  font-family: system-ui, sans-serif;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
 }
 
 .tagline {
-  font-size: 1.25rem;
-  color: #555;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 600px) {
   .container {
     margin: 2rem auto;
     padding: 0 1rem;
-    font-size: 1rem;
-  }
-
-  .tagline {
-    font-size: 1.1rem;
   }
 }

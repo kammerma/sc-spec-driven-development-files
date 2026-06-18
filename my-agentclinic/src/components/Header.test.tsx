@@ -6,6 +6,6 @@ describe('Header', () => {
   it('renders the AgentClinic heading', () => {
     render(<Header />)
 
-    expect(screen.getByRole('heading', { name: 'AgentClinic' })).toBeDefined()
+    expect(screen.getByRole('heading', { name: 'AgentClinic is open for business' })).toBeDefined()
   })
 })

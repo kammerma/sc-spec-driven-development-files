@@ -1,6 +1,8 @@
 .layout-header {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #ddd;
+  background-color: var(--color-accent-dark);
+  color: var(--color-bg);
+  border-bottom: 3px solid var(--color-accent);
 }
 
 .layout-main {
@@ -9,9 +11,9 @@
 
 .layout-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid #ddd;
-  font-size: 0.875rem;
-  color: #777;
+  border-top: 3px solid var(--color-accent);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-subtle);
 }
 
 @media (max-width: 600px) {
