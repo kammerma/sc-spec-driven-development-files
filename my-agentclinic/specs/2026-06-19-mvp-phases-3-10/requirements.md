@@ -40,11 +40,20 @@ Every new API route (`/api/agents/:id`, `/api/ailments`, `/api/ailments/:id`, `/
 ### Polish (Phase 10) is part of this branch's definition of done
 Per `roadmap.md`, every phase that ships UI must already be responsive — Phase 10 here means a final audit across all pages introduced in this spec (Phases 3–9) plus the Phase 2 home page, not a deferred first attempt at responsiveness. The audit also covers semantic HTML, keyboard navigation/focus styles, and adding visible error states for failed fetches (replacing any silent failures).
 
+### Client-side routing: `react-router-dom`
+Neither `roadmap.md` nor `tech-stack.md` specified a routing solution, but Phase 3 onward requires nav links and per-id detail pages (`/agents/:id`, `/ailments/:id`), which a single static `App` component can't support. `react-router-dom` was added (pinned, no `^`/`~`) with a `BrowserRouter` at the app root, `Routes`/`Route` in `App.tsx`, and `NavLink`s in `Header`. This is now reflected in `tech-stack.md`.
+
+### Dashboard count definitions
+`roadmap.md` names the dashboard's three counts ("agents, open appointments, ailments in-flight") but doesn't define them precisely, and there's no appointment-status lifecycle to anchor "open" against (see the fixed-enum decision above). This spec defines them concretely: `agentCount` is every row in `agents`; `openAppointmentCount` is every row in `appointments` with `status = 'requested'` (currently all of them, since no other status exists yet); `ailmentsInFlightCount` is the count of *distinct* ailments with at least one row in `agent_ailments` (not a count of agents-with-ailments, and not affected by appointments). If a future phase introduces appointment status transitions (confirmed/cancelled/completed), `openAppointmentCount`'s definition will need revisiting.
+
+### Known limitation: dev and test runs share one SQLite file
+`src/server/db.ts` resolves `data/agentclinic.db` relative to the project root regardless of which process opened it, so running `npm test` writes real rows into the same database the dev server reads from — confirmed during the Phase 10 audit, where booking-flow tests visibly changed the dashboard's appointment count. This was true since Phase 2 but only became visible once a `POST` route existed. Not fixed in this MVP (out of scope per the test-rigor decision above, which only requires coverage, not isolation), but flagged in `tech-stack.md` as something to address before further write-heavy features land.
+
 ## Context
 
 This is the first multi-phase spec in the project — Phase 2 covered a single phase. Phases 3–9 build out AgentClinic's core domain in the order the roadmap lays out (agents → ailments → therapies → booking → dashboard), since each phase's UI and API depend on data introduced by the previous one (e.g. the booking form needs both agents and therapists to exist first).
 
-`better-sqlite3` and the existing `migrations/001_init.sql` pattern from Phase 2 continue to apply: new tables are added via additional numbered migration files (`002_ailments.sql`, `003_therapies_and_links.sql`, `004_appointments.sql`, etc.) rather than editing the existing one, since `001_init.sql` has already shipped.
+`better-sqlite3` and the existing `migrations/001_init.sql` pattern from Phase 2 continue to apply: new tables were added via additional numbered migration files rather than editing the existing one, since `001_init.sql` had already shipped. As implemented: `002_ailments.sql`, `003_agent_ailments.sql`, `004_therapies.sql` (therapies table + `ailment_therapies` join), `005_therapists_and_appointments.sql`.
 
 ## Stakeholder Notes
 
