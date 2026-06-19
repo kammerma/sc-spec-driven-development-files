@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS therapists (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  specialty TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS appointments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  agent_id INTEGER NOT NULL REFERENCES agents (id),
+  therapist_id INTEGER NOT NULL REFERENCES therapists (id),
+  datetime TEXT NOT NULL,
+  status TEXT NOT NULL
+);
