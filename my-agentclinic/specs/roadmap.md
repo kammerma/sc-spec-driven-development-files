@@ -61,6 +61,11 @@ Every phase that ships UI must be responsive (phone, tablet, desktop) per Steve'
 - Semantic HTML audit; keyboard navigation and focus styles
 - Error states for failed API fetches
 
+## Phase 11 — Feedback Form
+- `feedback` table (name, message, rating, created_at)
+- `POST /api/feedback` route with basic validation
+- Feedback form page, linked from nav; confirmation view on success
+
 ---
 
 Later phases (not yet planned): auth, therapist profiles, email notifications, reporting.
