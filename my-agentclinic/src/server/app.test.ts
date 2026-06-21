@@ -57,12 +57,44 @@ describe('GET /api/agents/:id', () => {
       name: expect.any(String),
       description: expect.any(String),
     })
+    expect(Array.isArray(agent.appointments)).toBe(true)
   })
 
   it('returns 404 for a non-existent agent', async () => {
     const res = await app.request('/api/agents/999999')
 
     expect(res.status).toBe(404)
+  })
+
+  it("includes the agent's appointments, flagging which already have feedback", async () => {
+    const bookingRes = await app.request('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agentId: 1, therapistId: 1, datetime: '2026-08-01T10:00:00Z' }),
+    })
+    const appointment = await bookingRes.json()
+
+    const beforeFeedbackRes = await app.request('/api/agents/1')
+    const beforeFeedback = await beforeFeedbackRes.json()
+    const beforeEntry = beforeFeedback.appointments.find((a: { id: number }) => a.id === appointment.id)
+    expect(beforeEntry).toMatchObject({
+      id: appointment.id,
+      therapistName: expect.any(String),
+      datetime: '2026-08-01T10:00:00Z',
+      status: 'requested',
+      hasFeedback: false,
+    })
+
+    await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 5, message: 'Great session.' }),
+    })
+
+    const afterFeedbackRes = await app.request('/api/agents/1')
+    const afterFeedback = await afterFeedbackRes.json()
+    const afterEntry = afterFeedback.appointments.find((a: { id: number }) => a.id === appointment.id)
+    expect(afterEntry).toMatchObject({ id: appointment.id, hasFeedback: true })
   })
 })
 
@@ -181,6 +213,88 @@ describe('POST /api/appointments', () => {
   })
 })
 
+describe('POST /api/feedback', () => {
+  async function bookAppointment() {
+    const res = await app.request('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agentId: 1, therapistId: 1, datetime: '2026-09-01T10:00:00Z' }),
+    })
+    return res.json()
+  }
+
+  it('creates feedback for an appointment', async () => {
+    const appointment = await bookAppointment()
+
+    const res = await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 4, message: 'Helpful session.' }),
+    })
+
+    expect(res.status).toBe(201)
+    const feedback = await res.json()
+    expect(feedback).toMatchObject({
+      id: expect.any(Number),
+      appointmentId: appointment.id,
+      rating: 4,
+      message: 'Helpful session.',
+    })
+  })
+
+  it('rejects a non-existent appointment', async () => {
+    const res = await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: 999999, rating: 4, message: 'Helpful session.' }),
+    })
+
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects an out-of-range rating', async () => {
+    const appointment = await bookAppointment()
+
+    const res = await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 6, message: 'Helpful session.' }),
+    })
+
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects an empty message', async () => {
+    const appointment = await bookAppointment()
+
+    const res = await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 4, message: '   ' }),
+    })
+
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects a duplicate submission for the same appointment', async () => {
+    const appointment = await bookAppointment()
+
+    await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 4, message: 'Helpful session.' }),
+    })
+
+    const res = await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 3, message: 'Again.' }),
+    })
+
+    expect(res.status).toBe(400)
+  })
+})
+
 describe('GET /api/dashboard', () => {
   it('returns summary counts derived from the seed data', async () => {
     const res = await app.request('/api/dashboard')
@@ -191,8 +305,32 @@ describe('GET /api/dashboard', () => {
       agentCount: expect.any(Number),
       openAppointmentCount: expect.any(Number),
       ailmentsInFlightCount: expect.any(Number),
+      feedbackCount: expect.any(Number),
     })
     expect(dashboard.agentCount).toBeGreaterThan(0)
     expect(dashboard.ailmentsInFlightCount).toBeGreaterThan(0)
+    expect(dashboard.averageRating === null || typeof dashboard.averageRating === 'number').toBe(true)
+  })
+
+  it('reflects newly submitted feedback in feedbackCount and averageRating', async () => {
+    const bookingRes = await app.request('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agentId: 1, therapistId: 1, datetime: '2026-09-02T10:00:00Z' }),
+    })
+    const appointment = await bookingRes.json()
+
+    const before = await (await app.request('/api/dashboard')).json()
+
+    await app.request('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: appointment.id, rating: 5, message: 'Great.' }),
+    })
+
+    const after = await (await app.request('/api/dashboard')).json()
+
+    expect(after.feedbackCount).toBe(before.feedbackCount + 1)
+    expect(after.averageRating).not.toBeNull()
   })
 })

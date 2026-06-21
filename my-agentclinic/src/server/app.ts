@@ -1,17 +1,21 @@
 import { Hono } from 'hono'
-import { db } from './db'
+import { db } from './db.ts'
 import {
   toAgent,
   toAilment,
   toAppointment,
+  toAppointmentWithTherapist,
+  toFeedback,
   toTherapist,
   toTherapy,
   type AgentRow,
   type AilmentRow,
   type AppointmentRow,
+  type AppointmentWithTherapistRow,
+  type FeedbackRow,
   type TherapistRow,
   type TherapyRow,
-} from './types'
+} from './types.ts'
 
 export const app = new Hono()
 
@@ -48,7 +52,27 @@ app.get('/api/agents/:id', (c) => {
     )
     .all(row.id) as AilmentRow[]
 
-  return c.json({ ...toAgent(row), ailments: ailmentRows.map(toAilment) })
+  const appointmentRows = db
+    .prepare(
+      `SELECT
+         appointments.id,
+         therapists.name AS therapist_name,
+         appointments.datetime,
+         appointments.status,
+         CASE WHEN feedback.id IS NULL THEN 0 ELSE 1 END AS has_feedback
+       FROM appointments
+       JOIN therapists ON therapists.id = appointments.therapist_id
+       LEFT JOIN feedback ON feedback.appointment_id = appointments.id
+       WHERE appointments.agent_id = ?
+       ORDER BY appointments.datetime DESC`,
+    )
+    .all(row.id) as AppointmentWithTherapistRow[]
+
+  return c.json({
+    ...toAgent(row),
+    ailments: ailmentRows.map(toAilment),
+    appointments: appointmentRows.map(toAppointmentWithTherapist),
+  })
 })
 
 app.get('/api/ailments', (c) => {
@@ -133,6 +157,53 @@ app.post('/api/appointments', async (c) => {
   return c.json(toAppointment(row), 201)
 })
 
+app.post('/api/feedback', async (c) => {
+  const body = await c.req.json().catch(() => null)
+
+  if (!body || typeof body !== 'object') {
+    return c.json({ error: 'Request body must be a JSON object' }, 400)
+  }
+
+  const { appointmentId, rating, message } = body as Record<string, unknown>
+
+  if (typeof appointmentId !== 'number' || typeof rating !== 'number' || typeof message !== 'string') {
+    return c.json(
+      { error: 'appointmentId (number), rating (number), and message (string) are required' },
+      400,
+    )
+  }
+
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return c.json({ error: 'rating must be an integer from 1 to 5' }, 400)
+  }
+
+  if (message.trim().length === 0) {
+    return c.json({ error: 'message must not be empty' }, 400)
+  }
+
+  const appointment = db.prepare('SELECT id FROM appointments WHERE id = ?').get(appointmentId)
+  if (!appointment) {
+    return c.json({ error: 'No appointment with that id' }, 400)
+  }
+
+  const existingFeedback = db
+    .prepare('SELECT id FROM feedback WHERE appointment_id = ?')
+    .get(appointmentId)
+  if (existingFeedback) {
+    return c.json({ error: 'Feedback has already been submitted for this appointment' }, 400)
+  }
+
+  const result = db
+    .prepare('INSERT INTO feedback (appointment_id, rating, message) VALUES (?, ?, ?)')
+    .run(appointmentId, rating, message)
+
+  const row = db
+    .prepare('SELECT id, appointment_id, rating, message, created_at FROM feedback WHERE id = ?')
+    .get(result.lastInsertRowid) as FeedbackRow
+
+  return c.json(toFeedback(row), 201)
+})
+
 app.get('/api/dashboard', (c) => {
   const agentCount = (db.prepare('SELECT COUNT(*) as count FROM agents').get() as { count: number })
     .count
@@ -149,5 +220,19 @@ app.get('/api/dashboard', (c) => {
       .get() as { count: number }
   ).count
 
-  return c.json({ agentCount, openAppointmentCount, ailmentsInFlightCount })
+  const feedbackSummary = db
+    .prepare('SELECT COUNT(*) as count, AVG(rating) as average FROM feedback')
+    .get() as { count: number; average: number | null }
+
+  const feedbackCount = feedbackSummary.count
+  const averageRating =
+    feedbackCount === 0 ? null : Math.round(feedbackSummary.average! * 10) / 10
+
+  return c.json({
+    agentCount,
+    openAppointmentCount,
+    ailmentsInFlightCount,
+    feedbackCount,
+    averageRating,
+  })
 })

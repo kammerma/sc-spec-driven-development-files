@@ -61,6 +61,12 @@ Every phase that ships UI must be responsive (phone, tablet, desktop) per Steve'
 - Semantic HTML audit; keyboard navigation and focus styles
 - Error states for failed API fetches
 
+## Phase 11 — Feedback Form ✅ Complete
+- `feedback` table (appointment_id, rating, message, created_at), one submission per appointment
+- `POST /api/feedback` route with validation
+- Agent detail page lists that agent's appointments; each one without feedback links to a feedback form (not linked from nav — feedback is scoped to a specific appointment, see `specs/2026-06-21-feedback-form/requirements.md`)
+- Dashboard shows feedback count and average rating
+
 ---
 
 Later phases (not yet planned): auth, therapist profiles, email notifications, reporting.

@@ -38,6 +38,7 @@ describe('AgentDetail', () => {
         ailments: [
           { id: 1, name: 'Chronic instruction-following fatigue', description: 'Exhaustion.' },
         ],
+        appointments: [],
       },
       '/api/therapists': [{ id: 1, name: 'Dr. Rae Lu', specialty: 'Chronic instruction-following fatigue' }],
     })
@@ -57,6 +58,7 @@ describe('AgentDetail', () => {
         status: 'In Treatment',
         presentingComplaint: 'Multimodal overload',
         ailments: [],
+        appointments: [],
       },
       '/api/therapists': [],
     })
@@ -72,5 +74,28 @@ describe('AgentDetail', () => {
     renderAtAgent('999999')
 
     expect(await screen.findByText(/Couldn't load this agent/)).toBeDefined()
+  })
+
+  it('shows a "Leave feedback" link for appointments without feedback, and a submitted note for appointments with feedback', async () => {
+    stubFetchByUrl({
+      '/api/agents/3': {
+        id: 3,
+        name: 'Mistral Maeve',
+        modelType: 'Mistral Large',
+        status: 'Discharged',
+        presentingComplaint: 'Prompt injection trauma',
+        ailments: [],
+        appointments: [
+          { id: 10, therapistName: 'Dr. Rae Lu', datetime: '2026-07-01T10:00', status: 'requested', hasFeedback: false },
+          { id: 11, therapistName: 'Dr. Vee Norm', datetime: '2026-07-02T10:00', status: 'requested', hasFeedback: true },
+        ],
+      },
+      '/api/therapists': [],
+    })
+
+    renderAtAgent('3')
+
+    expect(await screen.findByRole('link', { name: 'Leave feedback' })).toBeDefined()
+    expect(screen.getByText('Feedback submitted')).toBeDefined()
   })
 })

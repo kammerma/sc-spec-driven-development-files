@@ -7,6 +7,7 @@ import AilmentsList from './pages/AilmentsList'
 import AilmentDetail from './pages/AilmentDetail'
 import TherapiesList from './pages/TherapiesList'
 import Dashboard from './pages/Dashboard'
+import FeedbackPage from './pages/FeedbackPage'
 
 function Home() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/agents" element={<AgentsList />} />
         <Route path="/agents/:id" element={<AgentDetail />} />
+        <Route path="/agents/:id/appointments/:appointmentId/feedback" element={<FeedbackPage />} />
         <Route path="/ailments" element={<AilmentsList />} />
         <Route path="/ailments/:id" element={<AilmentDetail />} />
         <Route path="/therapies" element={<TherapiesList />} />

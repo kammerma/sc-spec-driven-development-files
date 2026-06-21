@@ -32,6 +32,7 @@ export interface Ailment {
 
 export interface AgentWithAilments extends Agent {
   ailments: Ailment[]
+  appointments: AppointmentWithTherapist[]
 }
 
 export interface AilmentRow {
@@ -115,5 +116,59 @@ export function toAppointment(row: AppointmentRow): Appointment {
     therapistId: row.therapist_id,
     datetime: row.datetime,
     status: row.status,
+  }
+}
+
+export interface AppointmentWithTherapist {
+  id: number
+  therapistName: string
+  datetime: string
+  status: string
+  hasFeedback: boolean
+}
+
+export interface AppointmentWithTherapistRow {
+  id: number
+  therapist_name: string
+  datetime: string
+  status: string
+  has_feedback: number
+}
+
+export function toAppointmentWithTherapist(
+  row: AppointmentWithTherapistRow,
+): AppointmentWithTherapist {
+  return {
+    id: row.id,
+    therapistName: row.therapist_name,
+    datetime: row.datetime,
+    status: row.status,
+    hasFeedback: row.has_feedback === 1,
+  }
+}
+
+export interface Feedback {
+  id: number
+  appointmentId: number
+  rating: number
+  message: string
+  createdAt: string
+}
+
+export interface FeedbackRow {
+  id: number
+  appointment_id: number
+  rating: number
+  message: string
+  created_at: string
+}
+
+export function toFeedback(row: FeedbackRow): Feedback {
+  return {
+    id: row.id,
+    appointmentId: row.appointment_id,
+    rating: row.rating,
+    message: row.message,
+    createdAt: row.created_at,
   }
 }
