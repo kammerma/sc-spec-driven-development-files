@@ -4,6 +4,8 @@ type DashboardSummary = {
   agentCount: number
   openAppointmentCount: number
   ailmentsInFlightCount: number
+  feedbackCount: number
+  averageRating: number | null
 }
 
 export default function Dashboard() {
@@ -25,7 +27,8 @@ export default function Dashboard() {
     )
   }
 
-  const { agentCount, openAppointmentCount, ailmentsInFlightCount } = state.data
+  const { agentCount, openAppointmentCount, ailmentsInFlightCount, feedbackCount, averageRating } =
+    state.data
 
   return (
     <div className="container">
@@ -37,6 +40,10 @@ export default function Dashboard() {
         <dd>{openAppointmentCount}</dd>
         <dt>Ailments in-flight</dt>
         <dd>{ailmentsInFlightCount}</dd>
+        <dt>Feedback received</dt>
+        <dd>{feedbackCount}</dd>
+        <dt>Average rating</dt>
+        <dd>{averageRating === null ? '—' : averageRating}</dd>
       </dl>
     </div>
   )
