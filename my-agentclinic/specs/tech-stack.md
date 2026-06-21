@@ -30,7 +30,7 @@ AgentClinic is a client-side TypeScript application built with React and Vite. T
 ## Tooling
 
 - `vite` for frontend dev server and production build
-- The API server runs via `node --watch src/server/index.ts` (dev) / `node src/server/index.ts` (one-off), using Node's built-in TypeScript type-stripping — no `tsx`/esbuild step. This replaced `tsx` after Windows Smart App Control blocked `esbuild.exe` (an unsigned binary `tsx` spawns as a subprocess) from running; Vite and Vitest were unaffected since neither spawns it as a separate process. Relative imports under `src/server/` use explicit `.ts` extensions (`tsconfig.json` sets `allowImportingTsExtensions` + `noEmit`) because Node's ESM resolver requires them.
+- The API server runs via `node --watch src/server/index.ts` (dev) / `node src/server/index.ts` (one-off), using Node's built-in TypeScript type-stripping — no `tsx`/esbuild step. This replaced `tsx` after Windows Smart App Control blocked `esbuild.exe` (an unsigned binary `tsx` spawns as a subprocess) from running; Vite and Vitest were unaffected since neither spawns it as a separate process. Relative imports under `src/server/` use explicit `.ts` extensions (`tsconfig.json` sets `allowImportingTsExtensions` + `noEmit`) because Node's ESM resolver requires them. `package.json` sets `"type": "module"` so Node treats source files as ESM directly instead of detecting it from syntax on every run (which printed a `MODULE_TYPELESS_PACKAGE_JSON` warning and added reparse overhead).
 - No formatter configured yet (`prettier` was previously listed here but was never actually added to `package.json` or given a config file)
 
 ## What We Are Not Using

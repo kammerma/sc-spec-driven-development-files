@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "predev": "kill-port 3001",
     "dev": "concurrently \"vite\" \"node --watch src/server/index.ts\"",
