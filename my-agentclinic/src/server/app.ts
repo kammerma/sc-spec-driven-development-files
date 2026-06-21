@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { db } from './db'
+import { db } from './db.ts'
 import {
   toAgent,
   toAilment,
@@ -15,7 +15,7 @@ import {
   type FeedbackRow,
   type TherapistRow,
   type TherapyRow,
-} from './types'
+} from './types.ts'
 
 export const app = new Hono()
 

@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "predev": "kill-port 3001",
-    "dev": "concurrently \"vite\" \"tsx watch src/server/index.ts\"",
+    "dev": "concurrently \"vite\" \"node --watch src/server/index.ts\"",
     "preserver": "kill-port 3001",
-    "server": "tsx src/server/index.ts",
+    "server": "node src/server/index.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "test": "vitest run"
@@ -29,7 +29,6 @@
     "concurrently": "10.0.3",
     "jsdom": "29.1.1",
     "kill-port": "^2.0.1",
-    "tsx": "4.22.4",
     "typescript": "5.9.3",
     "vite": "8.0.16",
     "vitest": "4.1.9"

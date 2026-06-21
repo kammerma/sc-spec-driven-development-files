@@ -30,8 +30,8 @@ AgentClinic is a client-side TypeScript application built with React and Vite. T
 ## Tooling
 
 - `vite` for frontend dev server and production build
-- `tsx` for running the API server without a build step
-- `prettier` for formatting
+- The API server runs via `node --watch src/server/index.ts` (dev) / `node src/server/index.ts` (one-off), using Node's built-in TypeScript type-stripping — no `tsx`/esbuild step. This replaced `tsx` after Windows Smart App Control blocked `esbuild.exe` (an unsigned binary `tsx` spawns as a subprocess) from running; Vite and Vitest were unaffected since neither spawns it as a separate process. Relative imports under `src/server/` use explicit `.ts` extensions (`tsconfig.json` sets `allowImportingTsExtensions` + `noEmit`) because Node's ESM resolver requires them.
+- No formatter configured yet (`prettier` was previously listed here but was never actually added to `package.json` or given a config file)
 
 ## What We Are Not Using
 
