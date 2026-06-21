@@ -5,9 +5,12 @@ import { fileURLToPath } from 'node:url'
 
 const projectRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const dataDir = join(projectRoot, 'data')
-const dbPath = join(dataDir, 'agentclinic.db')
 
-if (!existsSync(dataDir)) {
+// Vitest sets process.env.VITEST, so test runs get an isolated in-memory
+// database instead of writing into the same file the dev server reads.
+const dbPath = process.env.VITEST ? ':memory:' : join(dataDir, 'agentclinic.db')
+
+if (!process.env.VITEST && !existsSync(dataDir)) {
   mkdirSync(dataDir, { recursive: true })
 }
 

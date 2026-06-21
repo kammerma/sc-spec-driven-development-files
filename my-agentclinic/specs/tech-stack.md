@@ -25,7 +25,7 @@ AgentClinic is a client-side TypeScript application built with React and Vite. T
 
 - **Vitest** — fast, TypeScript-native, works with both React (via jsdom) and the API server
 - Run via `npm test` (`vitest run`); used for validating features before merge
-- **Known limitation**: `src/server/db.ts` always opens `data/agentclinic.db` relative to the project root, so Vitest's API tests (`POST /api/appointments`, etc.) write into the same SQLite file the dev server uses — there is no separate test database or in-memory mode yet. Running `npm test` while `npm run dev` is open will visibly change dashboard counts. Worth revisiting (e.g. an in-memory SQLite instance for tests) before appointment status transitions or other write-heavy features are added.
+- `src/server/db.ts` checks `process.env.VITEST` (set automatically by Vitest) and opens an in-memory SQLite database during test runs instead of `data/agentclinic.db`, so `npm test` no longer writes real rows into the database the dev server reads. This fixed a real issue: rows from prior test runs (`POST /api/appointments`, `POST /api/feedback`) had been accumulating in the dev database, visible as duplicate appointments once the Phase 11 feedback work added an appointments list to the agent detail page.
 
 ## Tooling
 
